@@ -1,6 +1,6 @@
 {
 	"name": "fragment-sample-plugin",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "A sample plugin for Fragment, built on the @usefragment/core type contract.",
 	"main": "main.js",
 	"scripts": {

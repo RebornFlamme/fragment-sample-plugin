@@ -1,7 +1,7 @@
 {
 	"id": "fragment-sample-plugin",
 	"name": "Sample Plugin",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"minAppVersion": "0.1.15",
 	"description": "Demonstrates the Fragment plugin API: commands, an editor command, a ribbon icon, a custom view, a modal and a settings tab.",
 	"author": "RebornFlamme"
