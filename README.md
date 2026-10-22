@@ -18,6 +18,7 @@ but targets Fragment's public type contract,
 | A global DOM listener, auto-removed on unload | `Component.registerDomEvent` |
 | A repeating interval, auto-cleared on unload | `Component.registerInterval` |
 | Persisted settings | `Plugin.loadData` / `Plugin.saveData` |
+| A settings tab, declared as data | `static settingDefinitions`, `onExternalSettingsChange` |
 
 ## How Fragment plugins work
 
@@ -37,19 +38,17 @@ export default class MyPlugin extends Plugin {
 }
 ```
 
-### Not yet in 0.1.0
+### What the contract covers
 
-The type contract is intentionally minimal at `0.1.0`. These Obsidian APIs are
-**not** available yet, so this sample avoids them:
+`@usefragment/core` 0.3 follows Obsidian's plugin API (commands, views, ribbon,
+status bar, modals, menus, `Setting` and settings tabs, `requestUrl`, vault and
+workspace events) and adds Fragment's own surfaces: view layers and widgets
+(`registerLayer`, `WidgetLayer`), artefacts (`app.artefacts`), document providers,
+open registries (`defineRegistry`) and screen capture (`app.windowHost`).
 
-- `Setting` / `PluginSettingTab` and `Plugin.addSettingTab` (settings persist via
-  `loadData`/`saveData`, but there is no built-in settings UI yet).
-- `Plugin.addStatusBarItem`.
-- Obsidian's DOM sugar (`el.createEl`, `el.addClass`, `el.empty`, `el.setText`).
-  Use standard DOM APIs (`document.createElement`, `el.classList`,
-  `el.replaceChildren`, `el.textContent`) instead.
-
-The only global augmentation Fragment adds is `window.app`.
+Obsidian's DOM sugar (`el.createEl`, `el.addClass`, `el.empty`, `el.setText`) is
+not provided: use standard DOM APIs (`document.createElement`, `el.classList`,
+`el.replaceChildren`, `el.textContent`).
 
 ## Getting started
 
@@ -65,9 +64,23 @@ Place this folder in your vault's plugins directory (it already lives under
 
 ## Releasing
 
-`npm version patch|minor|major` runs `version-bump.mjs`, which writes the new
-version into `manifest.json` and records the compatible `minAppVersion` in
-`versions.json`.
+1. `npm version patch|minor|major` runs `version-bump.mjs`, which writes the new
+   version into `manifest.json` and records the compatible `minAppVersion` in
+   `versions.json`. It also creates a git tag equal to the version (no `v`
+   prefix, see `.npmrc`).
+2. `git push --follow-tags`. The `Release Fragment plugin` workflow builds the
+   plugin and publishes a GitHub release with `main.js`, `manifest.json` and
+   `styles.css` — the files Fragment downloads.
+
+## Publishing to the community catalog
+
+Open a pull request on
+[`RebornFlamme/fragment-releases`](https://github.com/RebornFlamme/fragment-releases)
+adding your plugin at the end of `community-plugins.json`. Once merged, it shows
+up in **Settings → Community plugins → Browse**.
+
+This repository is a GitHub template: click **Use this template** to start a
+new plugin.
 
 ## Project layout
 

@@ -7,16 +7,10 @@ import {
 	Plugin,
 	WorkspaceLeaf,
 	setIcon,
+	type SettingDefinition,
 } from "fragment";
 
-/**
- * The shape of the data this plugin persists via `loadData()` / `saveData()`.
- *
- * Fragment 0.1.0 does not yet ship a `Setting` / `PluginSettingTab` UI (the type
- * contract marks it as "future"), so this sample demonstrates persistence only.
- * The values below are edited programmatically; a settings tab can be added once
- * the host exposes one.
- */
+/** The shape of the data this plugin persists via `loadData()` / `saveData()`. */
 interface FragmentSampleSettings {
 	greeting: string;
 	clickCount: number;
@@ -40,6 +34,33 @@ const VIEW_TYPE_SAMPLE = "fragment-sample-view";
  */
 export default class FragmentSamplePlugin extends Plugin {
 	settings: FragmentSampleSettings = DEFAULT_SETTINGS;
+
+	/**
+	 * The settings tab, declared as data. Fragment's settings window renders it
+	 * from `data.json` WITHOUT running the plugin (it is a separate window), then
+	 * calls `onExternalSettingsChange()` here. `onChange` just writes `data`.
+	 * (An Obsidian-style `addSettingTab` also works: it opens as a modal in the
+	 * main window.)
+	 */
+	static settingDefinitions(data: Record<string, unknown>): SettingDefinition[] {
+		return [
+			{
+				type: "control",
+				name: "Greeting",
+				description: "Shown when you click the ribbon icon.",
+				control: {
+					type: "text",
+					value: typeof data.greeting === "string" ? data.greeting : DEFAULT_SETTINGS.greeting,
+					onChange: (value) => { data.greeting = value; },
+				},
+			},
+		];
+	}
+
+	/** The settings window changed `data.json`: read it again. */
+	async onExternalSettingsChange(): Promise<void> {
+		await this.loadSettings();
+	}
 
 	async onload(): Promise<void> {
 		await this.loadSettings();
